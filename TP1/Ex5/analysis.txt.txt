@@ -1,0 +1,110 @@
+Data used
+
+The following analysis is based on the HPL output you provided. The experiments were run with a matrix size of N = 10000 and different block sizes (NB = 32, 64, 128, 256).
+All runs used P = 1, Q = 1, and OMP_NUM_THREADS = 1 (single core, single thread).
+For all cases, the numerical validation reported by HPL passed successfully.
+
+Recorded results
+
+The table below summarizes the extracted results:
+
+N	NB	Time (s)	PHPL (GFLOP/s)	Validation
+10000	32	16.54	40.320	PASSED
+10000	64	13.68	48.728	PASSED
+10000	128	12.59	52.947	PASSED
+10000	256	12.34	54.028	PASSED
+Theoretical peak performance
+
+According to the exercise statement, the single-core theoretical peak performance is:
+
+P_core = 70.4 GFLOP/s
+
+Efficiency calculation
+
+The efficiency is computed using the formula:
+
+𝜂
+=
+PHPL
+𝑃
+core
+η=
+P
+core
+	​
+
+PHPL
+	​
+
+N	NB	PHPL (GFLOP/s)	Efficiency (%)
+10000	32	40.320	57.27%
+10000	64	48.728	69.22%
+10000	128	52.947	75.21%
+10000	256	54.028	76.74%
+
+(Computed as PHPL / 70.4 × 100)
+
+1. Comparison between measured performance and theoretical peak
+
+For all runs, the measured performance (PHPL) is lower than the theoretical peak (70.4 GFLOP/s), which is expected in practice.
+The best result is obtained with NB = 256, reaching 54.028 GFLOP/s, which corresponds to about 76.7% of the theoretical peak.
+
+2. Efficiency analysis
+
+The efficiency increases as the block size increases:
+
+The lowest efficiency is observed for NB = 32 (≈ 57%).
+
+The highest efficiency is achieved for NB = 256 (≈ 77%).
+
+This shows that the choice of block size has a significant impact on performance.
+
+3. Influence of N and NB
+Effect of block size (NB) for N = 10000
+
+Increasing NB from 32 to 256 leads to:
+
+Higher GFLOP/s
+
+Lower execution time
+
+Larger block sizes improve data reuse and reduce overhead.
+
+Among the tested values, NB = 256 gives the best performance, closely followed by NB = 128.
+
+Effect of matrix size (N)
+
+In this fragment, only N = 10000 is available.
+
+In general:
+
+Small matrices (e.g. N = 1000) usually show lower performance due to overhead.
+
+Performance increases with N until it reaches a plateau where memory and cache limitations dominate.
+
+To fully analyze this effect, additional runs with N = 1000 and N = 5000 should be included.
+
+4. Best block size
+
+Based on the available results, the best performance is achieved with:
+
+NB = 256,
+with NB = 128 being a close second.
+
+For this single-core setup, block sizes in the 128–256 range appear optimal.
+
+5. Why the measured performance is below the theoretical peak
+
+Several practical factors explain why PHPL does not reach P_core:
+
+Memory and cache limitations: Data does not always stay in cache, causing stalls.
+
+Imperfect vectorization: The theoretical peak assumes ideal use of vector units, which is rarely achieved.
+
+Frequency and thermal constraints: The CPU may not always run at maximum turbo frequency.
+
+BLAS efficiency: The BLAS library may not be fully optimized for this specific hardware.
+
+Algorithmic overhead: LU factorization includes steps like pivoting and panel factorization that are not compute-optimal.
+
+Extra work in HPL: Residual checks and validation add some overhead.
