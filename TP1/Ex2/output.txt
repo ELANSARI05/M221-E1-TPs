@@ -1,0 +1,10 @@
+n = 10 | Time = 0.000002 s | Bandwidth = 14.901161 GB/s
+n = 60 | Time = 0.000223 s | Bandwidth = 28.866823 GB/s
+n = 110 | Time = 0.001530 s | Bandwidth = 25.926073 GB/s
+n = 160 | Time = 0.004737 s | Bandwidth = 25.769540 GB/s
+n = 210 | Time = 0.009970 s | Bandwidth = 27.682980 GB/s
+n = 260 | Time = 0.018822 s | Bandwidth = 27.829435 GB/s
+n = 310 | Time = 0.034237 s | Bandwidth = 25.932207 GB/s
+n = 360 | Time = 0.054399 s | Bandwidth = 25.560344 GB/s
+n = 410 | Time = 0.083694 s | Bandwidth = 24.541853 GB/s
+n = 460 | Time = 0.112667 s | Bandwidth = 25.747014 GB/s

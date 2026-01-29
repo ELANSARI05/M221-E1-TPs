@@ -1,0 +1,31 @@
+HPLinpack benchmark input file
+Innovative Computing Laboratory, University of Tennessee
+HPL.out      output file name (if any)
+6            device out (6=stdout,7=stderr,file)
+4
+1000 5000 10000 20000
+9
+1 2 4 8 16 32 64 128 256
+0
+1
+1
+1
+16.0
+1
+2
+1
+1
+1
+2
+1
+2
+1
+1
+1
+1
+1
+60
+0
+0
+1
+8            memory alignment in double (> 0)

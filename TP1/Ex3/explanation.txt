@@ -1,0 +1,1 @@
+The best block size is roughly 30–40. At this size, the program makes the most of the CPU cache, so data gets reused efficiently. This means the memory works faster (higher bandwidth) and the program runs quicker (lower CPU time). If the block size is too small, the cache isn’t used well, and if it’s too big, it overflows the cache, which slows things down.

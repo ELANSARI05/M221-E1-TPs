@@ -1,0 +1,5 @@
+Observation:
+From the plot, the version compiled with -O2 is always faster than the one compiled with -O0. The execution time increases with the stride in both cases, but -O2 remains significantly lower for all strides.
+
+Interpretation:
+This improvement is mainly due to loop unrolling and other optimizations enabled by -O2, which reduce loop overhead and improve CPU efficiency. As the stride becomes larger, memory access becomes the main bottleneck, so the performance gain from loop unrolling decreases, but it still remains beneficial compared to -O0.

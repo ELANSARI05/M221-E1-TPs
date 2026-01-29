@@ -1,0 +1,87 @@
+#
+# Make.Linux -- HPL Makefile for modern Linux + OpenMPI + OpenBLAS (Intel64)
+#
+
+SHELL        = /bin/sh
+
+CD           = cd
+CP           = cp
+LN_S         = ln -fs
+MKDIR        = mkdir -p
+RM           = /bin/rm -f
+TOUCH        = touch
+
+# Platform identifier
+ARCH         = Linux_Intel64
+
+# HPL Directory Structure / HPL library
+# (Adjust TOPdir if you unpacked HPL somewhere else)
+TOPdir       = $(HOME)/hpl-2.3
+INCdir       = $(TOPdir)/include
+BINdir       = $(TOPdir)/bin/$(ARCH)
+LIBdir       = $(TOPdir)/lib/$(ARCH)
+
+HPLlib       = $(LIBdir)/libhpl.a
+
+# Message Passing library (MPI)
+# We use mpicc/mpif90 from the loaded OpenMPI module, so leave MPdir empty.
+MPdir        =
+MPinc        =
+MPlib        =
+
+# Linear Algebra library (BLAS / LAPACK)
+# Default: rely on system OpenBLAS/LAPACK via -lopenblas.
+# If OpenBLAS headers or libs are in a nonstandard place set LAinc/LAlib accordingly.
+LAdir        =
+LAinc        =
+LAlib        = -lopenblas -lpthread -lm
+
+# F77 / C interface (keep default f2c mapping option)
+F2CDEFS      = -DAdd__ -DF77_INTEGER=int -DStringSunStyle
+
+# HPL includes / libraries / specifics
+HPL_INCLUDES = -I$(INCdir) -I$(INCdir)/$(ARCH) $(LAinc) $(MPinc)
+HPL_LIBS     = $(HPLlib) $(LAlib) $(MPlib)
+
+# Compile time options
+# -DHPL_DETAILED_TIMING enables more timers (helpful)
+# -DHPL_PROGRESS_REPORT prints progress info
+HPL_OPTS     = -DHPL_DETAILED_TIMING -DHPL_PROGRESS_REPORT
+
+HPL_DEFS     = $(F2CDEFS) $(HPL_OPTS) $(HPL_INCLUDES)
+
+# Compilers / linkers - Optimization flags
+# Use mpicc from OpenMPI module
+CC       = mpicc
+CCNOOPT  = $(HPL_DEFS)
+
+# OpenMP flag: use -fopenmp (GCC/Clang) — if you compile with Intel compilers change to -qopenmp
+OMP_DEFS = -fopenmp
+
+# C compile flags: tuned for modern Intel CPUs
+CCFLAGS  = $(HPL_DEFS) -O3 -march=native -funroll-loops -fomit-frame-pointer -fPIC -Wall
+
+# Linker settings
+LINKER       = $(CC)
+LINKFLAGS    = $(CCFLAGS) $(OMP_DEFS)
+
+ARCHIVER     = ar
+ARFLAGS      = r
+RANLIB       = ranlib
+
+# Target binaries
+# (make will create these dirs if needed)
+.PHONY: all
+all: lib
+
+# Rules for creating directories and building are handled by the generic Makefile logic
+# (no custom compile rules here; HPL's top level Makefile will use these variables)
+
+# Notes for maintainers:
+# - If OpenBLAS is installed in a non-standard location, set:
+#     LAinc = -I/path/to/openblas/include
+#     LAlib = -L/path/to/openblas/lib -lopenblas -lpthread -lm
+#
+# - If your cluster uses Intel compilers and MKL, you can replace LAlib with MKL link group lines.
+# - If linking errors occur due to Fortran symbols, you may need to set MPlib to use mpif90 or add -lgfortran.
+#
