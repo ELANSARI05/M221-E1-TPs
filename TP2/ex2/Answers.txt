@@ -1,0 +1,11 @@
+Q1
+It is clear that compilation with -O2 adds some kind of optimization and runs much faster (almost half the time of -O0) than compilation with -O0. This is probably because of instruction reordering and the use of these optimizations to benefit from parallelism.
+
+Q2
+At -O0, the loop repeatedly loads values from memory and recomputes a * b twice per iteration, as shown by the two mulsd instructions inside the loop.
+At -O2, the compiler keeps values in registers, eliminates redundant computations, and unrolls the loop, which is visible through two consecutive addsd instructions and a loop counter decremented by 2 (sub eax, 2).
+This reorganization allows independent instructions to be executed efficiently and significantly improves performance by exploiting instruction-level parallelism.
+
+Q3
+With this optimized version of the code, the compilation with -O0 becomes faster because we reduce redundant computations and use a temporary variable that stores the product of the two doubles, which would be costly if computed twice.
+For -O2, the performance does not improve much more because the compiler already applies these optimizations automatically behind the scenes, so the results are quite similar.
