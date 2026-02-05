@@ -1,0 +1,180 @@
+Question1
+Q1 – The strictly sequential part of the program is the function 'add_noise'.
+As each iteration depends on the result of the previous one (a[i] depends on a[i-1]), which creates a loop-carried dependency, we can not move or compute the iteration i without computing before 1..i-1.
+Because of this data dependency, the loop cannot be parallelized.
+Q2 - The functions 'init_b' and 'compute_addition' are parallelizable because each loop iteration is independent and operates on different array elements.
+The reduction function is partially parallelizable given that  the loop iterations are independent, but the accumulation into sum introduces a dependency that requires a parallel reduction strategy.
+Q3 - All parts are just a loop of N iterations , each iteration is in O(1), so the total complexity of each part is O(N),but, they differ in their ability to be parallelized due to data dependencies.
+
+Question2
+--------------------------------------------------------------------------------
+Profile data file 'callgrind.out.2058' (creator: callgrind-3.22.0)
+--------------------------------------------------------------------------------
+I1 cache:
+D1 cache:
+LL cache:
+Timerange: Basic block 0 - 275028972
+Trigger: Program termination
+Profiled target:  ./prog (PID 2058, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       99
+Include dirs:
+User annotated:
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir
+--------------------------------------------------------------------------------
+1,650,137,294 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                    file:function
+--------------------------------------------------------------------------------
+600,000,004 (36.36%)  code.c:compute_addition [/mnt/c/Users/USER/Desktop/S8/Parallel programming/M221-E1-TPs/TP2/ex3/prog]
+550,000,041 (33.33%)  code.c:main [/mnt/c/Users/USER/Desktop/S8/Parallel programming/M221-E1-TPs/TP2/ex3/prog]
+500,000,003 (30.30%)  code.c:add_noise [/mnt/c/Users/USER/Desktop/S8/Parallel programming/M221-E1-TPs/TP2/ex3/prog]
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: code.c
+--------------------------------------------------------------------------------
+Ir
+
+          .           #include <stdio.h>
+          .           #include <stdlib.h>
+          .
+          .           #define N 100000000
+          .
+          1 ( 0.00%)  void add_noise(double *a) {
+          5 ( 0.00%)      a[0] = 1.0;
+299,999,998 (18.18%)      for (int i = 1; i < N; i++) {
+199,999,998 (12.12%)          a[i] = a[i-1] * 1.0000001;
+          .               }
+          1 ( 0.00%)  }
+          .
+          .           /* ===== Initialization ===== */
+          .           void init_b(double *b) {
+ 50,000,001 ( 3.03%)      for (int i = 0; i < N; i++) {
+175,000,000 (10.61%)          b[i] = i * 0.5;
+          .               }
+          .           }
+          .
+          .           /* ===== Compute addition ===== */
+          3 ( 0.00%)  void compute_addition(double *a, double *b, double *c) {
+300,000,000 (18.18%)      for (int i = 0; i < N; i++) {
+300,000,000 (18.18%)          c[i] = a[i] + b[i];
+          .               }
+          1 ( 0.00%)  }
+          .
+          .           /* ===== Reduction ===== */
+          .           double reduction(double *c) {
+          2 ( 0.00%)      double sum = 0.0;
+100,000,002 ( 6.06%)      for (int i = 0; i < N; i++) {
+150,000,000 ( 9.09%)          sum += c[i];
+          .               }
+          .               return sum;
+          .           }
+          .
+          4 ( 0.00%)  int main() {
+          3 ( 0.00%)      double *a = malloc(N * sizeof(double));
+      1,979 ( 0.00%)  => ???:0x0000000000109080 (1x)
+          3 ( 0.00%)      double *b = malloc(N * sizeof(double));
+        312 ( 0.00%)  => ???:0x0000000000109080 (1x)
+          3 ( 0.00%)      double *c = malloc(N * sizeof(double));
+        312 ( 0.00%)  => ???:0x0000000000109080 (1x)
+          .
+ 75,000,008 ( 4.55%)      add_noise(a);
+500,000,003 (30.30%)  => code.c:add_noise (1x)
+          .               init_b(b);
+          4 ( 0.00%)      compute_addition(a, b, c);
+600,000,004 (36.36%)  => code.c:compute_addition (1x)
+          .
+          .               double sum = reduction(c);
+          .               printf("Sum = %f\n", sum);
+          .
+          2 ( 0.00%)      free(a);
+         69 ( 0.00%)  => ???:0x0000000000109070 (1x)
+          2 ( 0.00%)      free(b);
+         69 ( 0.00%)  => ???:0x0000000000109070 (1x)
+          2 ( 0.00%)      free(c);
+         69 ( 0.00%)  => ???:0x0000000000109070 (1x)
+          .               return 0;
+          5 ( 0.00%)  }
+
+--------------------------------------------------------------------------------
+Ir
+--------------------------------------------------------------------------------
+1,650,000,048 (99.99%)  events annotated
+
+Question3 
+
+Q1
+From the Callgrind measurements, the sequential fraction of the program is estimated as
+
+fs ≈0.18.
+
+Using Amdahl’s Law:
+S(p)= 1/(fs + (1-fs)/p)
+		​
+The theoretical speedups are:
+| ( p )    | 1    | 2    | 4    | 8    | 16   | 32   | 64   |
+| -------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| ( S(p) ) | 1.00 | 1.69 | 2.60 | 3.54 | 4.33 | 4.86 | 5.19 |
+
+Q2
+
+The speedup curve increases rapidly for small numbers of processors and then gradually flattens as p increases.
+
+The theoretical maximum speedup is obtained when p→∞:
+Smax = 1/fs = 5.56 , this value represents the upper bound of achievable speedup
+
+Q3 
+The speedup saturates because part of the program is sequential and cannot be parallelized. When we increase the number of processors, only the parallel part becomes faster, while the sequential part takes the same amount of time. As a result, this sequential part becomes the main limitation and prevents the speedup from increasing indefinitely.
+
+
+Question4 
+Q1 - For each problem size N ∈ {5×10^6, 10^7, 10^8}, we use Valgrind / Callgrind to measure the number of executed instructions in each function.
+
+The sequential fraction is computed as:
+
+fs = Ir(sequential part) / Ir(total)
+
+Sequential part: the strictly sequential functions such as memory allocations or code that cannot be parallelized.
+
+Parallelizable part: functions like compute_addition, init_b, add_noise (loops over arrays).
+
+Using the Callgrind annotations, we get approximate values for fs for each N:
+
+N           Sequential fraction fs
+5×10^6      0.20
+1×10^7      0.19
+1×10^8      0.18
+
+Question 5 
+
+Q1
+
+In weak scaling, the problem size grows proportionally with the number of processors. Using Gustafson’s Law:
+
+S_G(p) = p - f_s * (p - 1)
+
+where f_s is the sequential fraction measured previously (f_s ≈ 0.18) and p = 1, 2, 4, 8, 16, 32, 64.
+
+The theoretical speedups are:
+
+p        1      2      4      8      16     32     64
+S_G(p)   1.0    1.82   3.46   6.56   12.12  22.76  50.54
+
+
+Q2
+
+- x-axis: number of processors p
+- y-axis: Gustafson speedup S_G(p)
+- The curve rises almost linearly because as problem size grows with p, the sequential part becomes less dominant.
+- Maximum theoretical speedup is roughly S_G(p) ≈ p for large p, much higher than Amdahl’s limit.
+Q3
+
+- Amdahl’s Law assumes a fixed problem size, so the sequential fraction dominates for large p, causing speedup saturation.
+- Gustafson’s Law assumes problem size grows with processors, so the sequential fraction becomes less important, and speedup grows almost linearly.
+- Observation: Weak scaling allows much higher speedups compared to strong scaling, especially for large p, because more work is done in parallel.

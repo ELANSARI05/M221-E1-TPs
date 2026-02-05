@@ -9,3 +9,4 @@ This reorganization allows independent instructions to be executed efficiently a
 Q3
 With this optimized version of the code, the compilation with -O0 becomes faster because we reduce redundant computations and use a temporary variable that stores the product of the two doubles, which would be costly if computed twice.
 For -O2, the performance does not improve much more because the compiler already applies these optimizations automatically behind the scenes, so the results are quite similar.
+
