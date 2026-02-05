@@ -1,0 +1,6 @@
+Sum = 1000000.000000, Time = 3.255000 ms for Unrolling factor = 1 
+Sum = 1000000.000000, Time = 2.776000 ms for Unrolling factor = 2 
+Sum = 1000000.000000, Time = 2.435000 ms for Unrolling factor = 4 
+Sum = 1000000.000000, Time = 2.203000 ms for Unrolling factor = 8 
+Sum = 1000000.000000, Time = 1.986000 ms for Unrolling factor = 16 
+Sum = 1000000.000000, Time = 1.828000 ms for Unrolling factor = 32 

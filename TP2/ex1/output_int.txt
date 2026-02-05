@@ -1,0 +1,6 @@
+[int]   U=1  Time=0.792000 ms  Sum=1000000
+[int]   U=2  Time=0.379000 ms  Sum=1000000
+[int]   U=4  Time=0.451000 ms  Sum=1000000
+[int]   U=8  Time=0.585000 ms  Sum=1000000
+[int]   U=16 Time=0.747000 ms  Sum=1000000
+[int]   U=32 Time=0.470000 ms  Sum=1000000
