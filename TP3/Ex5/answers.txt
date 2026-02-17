@@ -1,0 +1,32 @@
+Parallel Jacobi Method - TP3
+
+Objective:
+- Solve a linear system using the Jacobi iterative method in parallel with OpenMP.
+
+Steps:
+1. Compile the program:
+   gcc parallel_ex.c -fopenmp -O2 -o jacobi
+
+2. Run with different thread counts:
+
+Threads | Elapsed Time (sec) | Speedup (S = T1 / Tp) | Efficiency (E = S / p)
+--------|-------------------|----------------------|---------------------
+1       | 0.002917          | 1.00                 | 1.00
+2       | 0.003378          | 0.86                 | 0.43
+4       | 0.002064          | 1.41                 | 0.35
+8       | 0.007389          | 0.39                 | 0.05
+16      | 0.03507           | 0.08                 | 0.01
+32      | 0.04758           | 0.06                 | 0.002
+
+Notes:
+- The Jacobi method was parallelized by computing each element of x_courant[i] independently.
+- Speedup is calculated relative to single-thread execution: S = T1 / Tp
+- Efficiency is calculated as E = S / p, where p = number of threads.
+- Observed that for small system size (n=120), using many threads (8-32) does not improve speed due to overhead.
+- Best performance is achieved around 1–4 threads for this matrix size.
+- For larger matrices, parallel scaling would be better.
+
+Conclusion:
+- Parallel Jacobi works correctly.
+- Thread overhead dominates for small matrices.
+- Speedup improves with problem size and moderate thread counts.
